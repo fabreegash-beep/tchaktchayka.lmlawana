@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحدي الألوان - نسخة احترافية</title>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+    <style>
+        :root { --primary: #2c3e50; --bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%); --success: #27ae60; --error: #e74c3c; }
+        body { font-family: 'Cairo', 'Segoe UI', sans-serif; background: var(--bg); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
+        .container { background: white; padding: 25px; border-radius: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); text-align: center; width: 95%; max-width: 1000px; position: relative; backdrop-filter: blur(5px); }
+        .hidden { display: none !important; }
+        .room-display { background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 12px 25px; border-radius: 50px; font-size: 1.3rem; font-weight: bold; margin-bottom: 20px; display: inline-block; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .players-container { display: flex; justify-content: space-between; margin-bottom: 20px; gap: 15px; flex-wrap: wrap; }
+        .player-board { border: 3px solid #ddd; padding: 15px; border-radius: 20px; width: 48%; background: white; transition: all 0.3s; }
+        .active-turn { border-color: #f39c12; background: linear-gradient(135deg, #fff9e6, #fff); box-shadow: 0 0 20px rgba(243,156,18,0.3); transform: scale(1.02); }
+        .player-name { font-size: 1.3rem; font-weight: bold; margin-bottom: 10px; }
+        .slots { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-top: 10px; }
+        .slot { width: 45px; height: 45px; border: 3px solid #ddd; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #ecf0f1; font-size: 0.9rem; font-weight: bold; transition: all 0.3s; margin: 0 auto; }
+        .dice-area { display: flex; justify-content: center; align-items: center; gap: 30px; margin: 20px 0; flex-wrap: wrap; }
+        .dice-container { text-align: center; }
+        .die { width: 80px; height: 80px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 0; background: white; box-shadow: 0 8px 20px rgba(0,0,0,0.2); transition: all 0.3s; position: relative; overflow: hidden; }
+        .die span { font-size: 1rem; font-weight: bold; color: white; text-shadow: 1px 1px 2px black; }
+        .roll-btn { padding: 12px 30px; border: none; border-radius: 50px; background: linear-gradient(135deg, #f39c12, #e67e22); color: white; cursor: pointer; font-weight: bold; font-size: 1.1rem; transition: all 0.3s; margin-top: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .roll-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
+        .roll-btn:active { transform: translateY(2px); }
+        .roll-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .main-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-top: 25px; justify-items: center; }
+        .cell { width: 70px; height: 70px; background: #34495e; border-radius: 15px; cursor: pointer; border: 3px solid #2c3e50; transition: all 0.2s; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        .cell:hover { transform: scale(1.05); box-shadow: 0 6px 12px rgba(0,0,0,0.3); }
+        .cell.matched { visibility: hidden; pointer-events: none; opacity: 0; }
+        .cell.revealed { animation: pulse 0.5s ease; }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        button { padding: 10px 20px; border: none; border-radius: 8px; background: var(--primary); color: white; cursor: pointer; font-weight: bold; }
+        #win-screen { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 0; }
+        #win-screen h1 { font-size: 4rem; margin: 0; }
+        #win-screen h2 { color: gold; font-size: 2rem; }
+        #status { font-size: 1.2rem; font-weight: bold; margin: 15px 0; padding: 10px; border-radius: 10px; background: #ecf0f1; }
+        .dice-label { font-size: 0.9rem; color: #666; margin-top: 5px; }
+        @media (max-width: 768px) {
+            .players-container { flex-direction: column; }
+            .player-board { width: 100%; }
+            .cell { width: 50px; height: 50px; }
+            .die { width: 60px; height: 60px; }
+            .slot { width: 35px; height: 35px; font-size: 0.7rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="win-screen" class="hidden">
+        <h1>🏆</h1>
+        <h2 id="win-msg" style="color: gold;"></h2>
+        <button onclick="location.reload()" style="background: #27ae60; font-size: 1.2rem;">🎮 لعبة جديدة</button>
+    </div>
+
+    <div id="lobby">
+        <h1>🎮 تحدي الألوان الاحترافي</h1>
+        <p style="color: #666;">تحدى أصدقائك في لعبة الذاكرة والحظ</p>
+        <button id="btnCreate" style="background: linear-gradient(135deg, #667eea, #764ba2); font-size: 1.1rem;">🚀 إنشاء غرفة جديدة</button>
+        <p>أو</p>
+        <input type="text" id="roomInput" placeholder="أدخل الكود (4 أرقام)" style="padding: 10px; width: 150px; text-align: center; border-radius: 10px; border: 2px solid #ddd;">
+        <button id="btnJoin" style="background: var(--success); font-size: 1.1rem;">🎯 انضمام</button>
+    </div>
+
+    <div id="game-ui" class="hidden">
+        <div class="room-display">🏠 كود الغرفة: <span id="roomCode"></span></div>
+        <div class="players-container">
+            <div id="p1-board" class="player-board">
+                <div class="player-name">🎭 اللاعب 1 (المضيف)</div>
+                <div class="slots" id="p1-slots"></div>
+            </div>
+            <div id="p2-board" class="player-board">
+                <div class="player-name">🎭 اللاعب 2 (الضيف)</div>
+                <div class="slots" id="p2-slots"></div>
+            </div>
+        </div>
+        
+        <div class="dice-area">
+            <div class="dice-container">
+                <div id="d1" class="die"></div>
+                <div class="dice-label">النرد الأول</div>
+            </div>
+            <div class="dice-container">
+                <div id="d2" class="die"></div>
+                <div class="dice-label">النرد الثاني</div>
+            </div>
+        </div>
+        
+        <button id="rollBtn" class="roll-btn">🎲 رمي النرد 🎲</button>
+        <div id="status">✨ جاري التحميل...</div>
+        
+        <h3 style="margin-top: 20px;">📦 الخانات المخفية (12 خانة)</h3>
+        <div class="main-grid" id="grid"></div>
+    </div>
+</div>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyCTKYD680Jdbl0azC9RTtuKZBaLX2uU_Ck",
+        authDomain: "my-online-store-34f34.firebaseapp.com",
+        databaseURL: "https://my-online-store-34f34-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "my-online-store-34f34",
+        storageBucket: "my-online-store-34f34.firebasestorage.app",
+        messagingSenderId: "288655549705",
+        appId: "1:288655549705:web:06901ce4ac1a50eebe1fd8"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    let roomID, role, myTurn = false, hasRolledThisTurn = false;
+    
+    // تعريف الألوان مع أسماء عربية
+    const colorMap = {
+        '#FF69B4': { name: 'وردي', ar: 'وردي' },
+        '#e74c3c': { name: 'أحمر', ar: 'أحمر' },
+        '#f1c40f': { name: 'أصفر', ar: 'أصفر' },
+        '#3498db': { name: 'أزرق', ar: 'أزرق' },
+        '#8B4513': { name: 'بني', ar: 'بني' },
+        '#2ecc71': { name: 'أخضر', ar: 'أخضر' }
+    };
+    const hexArray = Object.keys(colorMap);
+    const colorNames = hexArray.map(h => colorMap[h].ar);
+
+    // تجهيز الخانات المرقمة للاعبين
+    function setupSlots() {
+        ['p1-slots', 'p2-slots'].forEach(id => {
+            const div = document.getElementById(id);
+            div.innerHTML = '';
+            for(let i = 1; i <= 6; i++) {
+                div.innerHTML += `<div class="slot" data-index="${i}">${i}</div>`;
+            }
+        });
+    }
+    setupSlots();
+
+    document.getElementById('btnCreate').onclick = async () => {
+        roomID = Math.floor(1000 + Math.random() * 9000).toString();
+        role = 'p1';
+        
+        // إنشاء 12 خانة عشوائية (كل لون مرتين)
+        let gridColors = [...hexArray, ...hexArray];
+        for(let i = gridColors.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [gridColors[i], gridColors[j]] = [gridColors[j], gridColors[i]];
+        }
+        
+        const grid = gridColors.map(c => ({ c, m: false }));
+        
+        await db.ref('rooms/' + roomID).set({
+            grid: grid,
+            turn: 'p1',
+            p1Inv: [0,0,0,0,0,0],
+            p2Inv: [0,0,0,0,0,0],
+            dice: ['?', '?'],
+            rev: { a: -1, b: -1 },
+            win: '',
+            hasRolled: { p1: false, p2: false }
+        });
+        
+        alert("🎫 كود الغرفة: " + roomID + "\nأرسله لصديقك للانضمام!");
+        start();
+    };
+
+    document.getElementById('btnJoin').onclick = () => {
+        roomID = document.getElementById('roomInput').value.trim();
+        if(roomID.length !== 4) {
+            alert("⚠️ الرجب إدخال كود مكون من 4 أرقام!");
+            return;
+        }
+        role = 'p2';
+        db.ref('rooms/' + roomID).once('value', snapshot => {
+            if(snapshot.exists()) {
+                start();
+            } else {
+                alert("❌ الغرفة غير موجودة! تأكد من الكود.");
+            }
+        });
+    };
+
+    function start() {
+        document.getElementById('lobby').classList.add('hidden');
+        document.getElementById('game-ui').classList.remove('hidden');
+        document.getElementById('roomCode').innerText = roomID;
+        
+        const g = document.getElementById('grid');
+        g.innerHTML = '';
+        for(let i = 0; i < 12; i++) {
+            let c = document.createElement('div');
+            c.className = 'cell';
+            c.id = 'cell-' + i;
+            c.onclick = () => play(i);
+            g.appendChild(c);
+        }
+        listen();
+    }
+
+    async function play(i) {
+        if(!myTurn) {
+            showMessage("⏳ ليس دورك الآن!", "error");
+            return;
+        }
+        
+        const snapshot = await db.ref('rooms/' + roomID).once('value');
+        const data = snapshot.val();
+        
+        if(!data) return;
+        if(data.grid[i].m) {
+            showMessage("🔒 هذه الخانة تم استخدامها مسبقاً!", "error");
+            return;
+        }
+        if(data.dice[0] === '?' || data.dice[1] === '?') {
+            showMessage("🎲 يجب رمي النرد أولاً!", "error");
+            return;
+        }
+        
+        const clickedColor = data.grid[i].c;
+        const diceColors = data.dice;
+        const isMatch = diceColors.includes(clickedColor);
+        
+        const currentInv = role === 'p1' ? [...data.p1Inv] : [...data.p2Inv];
+        const colorIndex = hexArray.indexOf(clickedColor);
+        const alreadyHas = currentInv[colorIndex] === 1;
+        
+        // عرض اللون المؤقت
+        const cell = document.getElementById('cell-' + i);
+        cell.style.backgroundColor = clickedColor;
+        cell.classList.add('revealed');
+        
+        let updates = {};
+        
+        if(isMatch && !alreadyHas) {
+            currentInv[colorIndex] = 1;
+            updates[role === 'p1' ? 'p1Inv' : 'p2Inv'] = currentInv;
+            updates[`grid/${i}/m`] = true;
+            
+            const colorName = colorMap[clickedColor].ar;
+            showMessage(`✅ رائع! حصلت على اللون ${colorName}!`, "success");
+            
+            // التحقق من الفوز
+            if(!currentInv.includes(0)) {
+                updates['win'] = role;
+                await db.ref('rooms/' + roomID).update(updates);
+                return;
+            }
+        } else if(isMatch && alreadyHas) {
+            showMessage(`⚠️ لديك بالفعل اللون ${colorMap[clickedColor].ar}!`, "warning");
+            updates[`grid/${i}/m`] = true;
+        } else {
+            showMessage(`❌ للأسف! اللون ${colorMap[clickedColor].ar} لا يطابق النرد!`, "error");
+        }
+        
+        // تسجيل الخانة المقلوبة مؤقتاً
+        const revKey = data.rev.a === -1 ? 'rev/a' : 'rev/b';
+        updates[revKey] = i;
+        
+        await db.ref('rooms/' + roomID).update(updates);
+        
+        // إنهاء الدور بعد ثانيتين
+        setTimeout(async () => {
+            const nextTurn = role === 'p1' ? 'p2' : 'p1';
+            await db.ref('rooms/' + roomID).update({
+                turn: nextTurn,
+                dice: ['?', '?'],
+                rev: { a: -1, b: -1 },
+                hasRolled: { p1: false, p2: false }
+            });
+            hasRolledThisTurn = false;
+        }, 2000);
+    }
+
+    async function rollDice() {
+        if(!myTurn) {
+            showMessage("⏳ ليس دورك الآن!", "error");
+            return;
+        }
+        
+        const snapshot = await db.ref('rooms/' + roomID).once('value');
+        const data = snapshot.val();
+        
+        if(data.hasRolled && data.hasRolled[role]) {
+            showMessage("🎲 لقد رميت النرد بالفعل في هذا الدور!", "warning");
+            return;
+        }
+        
+        // رمي النرد - اختيار لونين عشوائيين
+        const dice1 = hexArray[Math.floor(Math.random() * hexArray.length)];
+        const dice2 = hexArray[Math.floor(Math.random() * hexArray.length)];
+        
+        const colorName1 = colorMap[dice1].ar;
+        const colorName2 = colorMap[dice2].ar;
+        
+        showMessage(`🎲 ظهر النرد: ${colorName1} و ${colorName2}`, "success");
+        
+        await db.ref('rooms/' + roomID).update({
+            dice: [dice1, dice2],
+            [`hasRolled/${role}`]: true
+        });
+        
+        hasRolledThisTurn = true;
+    }
+
+    function listen() {
+        db.ref('rooms/' + roomID).on('value', (snapshot) => {
+            const data = snapshot.val();
+            if(!data) return;
+            
+            // التحقق من الفوز
+            if(data.win) {
+                document.getElementById('win-screen').classList.remove('hidden');
+                const winnerName = data.win === 'p1' ? "اللاعب 1 (المضيف)" : "اللاعب 2 (الضيف)";
+                document.getElementById('win-msg').innerHTML = `🎉 ${winnerName} فاز باللعبة! 🎉`;
+                return;
+            }
+            
+            myTurn = data.turn === role;
+            
+            // تحديث حالة الزر
+            const rollBtn = document.getElementById('rollBtn');
+            rollBtn.disabled = !myTurn || (data.hasRolled && data.hasRolled[role]);
+            
+            // تحديث حالة اللاعبين
+            document.getElementById('p1-board').className = data.turn === 'p1' ? 'player-board active-turn' : 'player-board';
+            document.getElementById('p2-board').className = data.turn === 'p2' ? 'player-board active-turn' : 'player-board';
+            
+            // تحديث الخانات المخفية
+            data.grid.forEach((item, i) => {
+                const el = document.getElementById('cell-' + i);
+                if(item.m) {
+                    el.className = 'cell matched';
+                } else {
+                    el.className = 'cell';
+                    if(data.rev.a === i || data.rev.b === i) {
+                        el.style.backgroundColor = item.c;
+                    } else {
+                        el.style.backgroundColor = '#34495e';
+                    }
+                }
+            });
+            
+            // تحديث النرد
+            updateDieUI('d1', data.dice[0]);
+            updateDieUI('d2', data.dice[1]);
+            
+            // تحديث خانات اللاعبين
+            updateSlots('p1-slots', data.p1Inv);
+            updateSlots('p2-slots', data.p2Inv);
+            
+            // تحديث رسالة الحالة
+            const statusText = myTurn ? 
+                (data.hasRolled && data.hasRolled[role] ? "🎯 دورك - اختر خانة!" : "🎲 دورك - اضغط على زر النرد أولاً!") :
+                `⏳ دور ${data.turn === 'p1' ? 'اللاعب 1' : 'اللاعب 2'} - انتظر...`;
+            document.getElementById('status').innerHTML = statusText;
+        });
+    }
+    
+    function updateDieUI(elementId, colorHex) {
+        const die = document.getElementById(elementId);
+        if(colorHex === '?' || !colorHex) {
+            die.style.background = 'linear-gradient(135deg, #fff, #f0f0f0)';
+            die.innerHTML = '<span style="font-size: 2rem;">?</span>';
+            die.style.boxShadow = 'inset 0 0 10px rgba(0,0,0,0.1)';
+        } else {
+            die.style.background = `radial-gradient(circle at 30% 30%, ${colorHex}, ${colorHex}dd)`;
+            die.innerHTML = `<span style="font-size: 1.2rem;">${colorMap[colorHex].ar}</span>`;
+            die.style.boxShadow = '0 8px 20px rgba(0,0,0,0.3)';
+        }
+    }
+
+    function updateSlots(slotsId, inv) {
+        const slots = document.getElementById(slotsId).children;
+        for(let i = 0; i < inv.length; i++) {
+            if(inv[i] === 1) {
+                slots[i].style.background = hexArray[i];
+                slots[i].style.color = 'white';
+                slots[i].style.borderColor = 'gold';
+                slots[i].innerHTML = colorMap[hexArray[i]].ar;
+            } else {
+                slots[i].style.background = '#ecf0f1';
+                slots[i].style.color = '#999';
+                slots[i].style.borderColor = '#ddd';
+                slots[i].innerHTML = (i + 1).toString();
+            }
+        }
+    }
+    
+    function showMessage(msg, type) {
+        const statusDiv = document.getElementById('status');
+        statusDiv.innerHTML = msg;
+        statusDiv.style.background = type === 'success' ? '#d4edda' : type === 'error' ? '#f8d7da' : '#fff3cd';
+        statusDiv.style.color = type === 'success' ? '#155724' : type === 'error' ? '#721c24' : '#856404';
+        setTimeout(() => {
+            if(document.getElementById('status').innerHTML === msg) {
+                statusDiv.style.background = '#ecf0f1';
+                statusDiv.style.color = '#333';
+            }
+        }, 3000);
+    }
+
+    document.getElementById('rollBtn').onclick = rollDice;
+</script>
+</body>
+</html>
