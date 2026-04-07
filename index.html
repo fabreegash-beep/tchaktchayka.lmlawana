@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>🎨 دائرة الألوان</title>
+    <title>🎲 دائرة الألوان | نرد حقيقي + مؤثرات صوتية</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -17,7 +17,7 @@
 
         body {
             font-family: 'Cairo', sans-serif;
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
             min-height: 100vh;
             padding: 8px;
             display: flex;
@@ -26,67 +26,67 @@
         }
 
         .game-wrapper {
-            max-width: 420px;
+            max-width: 450px;
             width: 100%;
             margin: 0 auto;
         }
 
         .game-card {
-            background: rgba(255, 255, 255, 0.96);
-            border-radius: 28px;
-            padding: 12px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 35px;
+            padding: 14px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
 
-        /* شاشة الدخول */
         .lobby-screen {
             text-align: center;
-            padding: 20px 10px;
+            padding: 25px 10px;
         }
 
         .game-title {
-            font-size: 1.8rem;
+            font-size: 2rem;
             font-weight: 800;
-            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+            background: linear-gradient(135deg, #f093fb, #f5576c, #667eea);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
         }
 
         .game-subtitle {
             color: #888;
-            font-size: 0.75rem;
-            margin-bottom: 20px;
+            font-size: 0.8rem;
+            margin-bottom: 25px;
         }
 
         .btn-primary {
             background: linear-gradient(135deg, #667eea, #764ba2);
             border: none;
-            padding: 10px 22px;
-            font-size: 0.9rem;
+            padding: 12px 25px;
+            font-size: 0.95rem;
             font-weight: bold;
             border-radius: 50px;
             color: white;
             cursor: pointer;
             transition: all 0.2s;
             width: 80%;
-            max-width: 200px;
+            max-width: 220px;
+            box-shadow: 0 4px 12px rgba(102,126,234,0.4);
         }
 
         .btn-primary:active { transform: scale(0.96); }
         .btn-success { background: linear-gradient(135deg, #11998e, #38ef7d); }
         .room-input {
-            padding: 8px 12px;
-            font-size: 1rem;
+            padding: 10px 15px;
+            font-size: 1.1rem;
             border: 2px solid #e0e0e0;
             border-radius: 50px;
             text-align: center;
-            width: 120px;
+            width: 130px;
             font-family: monospace;
             font-weight: bold;
             letter-spacing: 2px;
-            margin: 8px;
+            margin: 10px;
         }
 
         .game-header {
@@ -96,72 +96,71 @@
         }
         .room-code-badge {
             background: linear-gradient(135deg, #f093fb, #f5576c);
-            padding: 5px 14px;
+            padding: 6px 16px;
             border-radius: 50px;
             color: white;
             font-weight: bold;
-            font-size: 0.7rem;
+            font-size: 0.75rem;
         }
 
-        /* ترتيب اللاعبين */
         .players-layout {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            margin-bottom: 12px;
+            gap: 12px;
+            margin-bottom: 15px;
         }
 
-        /* الخصم (فوق) */
         .opponent-card {
-            background: linear-gradient(145deg, #e8eaed, #dadce0);
-            border-radius: 20px;
-            padding: 8px 10px;
-            border: 1px solid #ccc;
+            background: linear-gradient(145deg, #2c3e50, #1a252f);
+            border-radius: 22px;
+            padding: 10px 12px;
+            color: white;
         }
         .opponent-card.active {
             border: 2px solid #f39c12;
-            background: linear-gradient(145deg, #fef5e0, #faeccc);
+            box-shadow: 0 0 15px rgba(243,156,18,0.3);
         }
 
-        /* اللاعب (تحت) */
         .player-card {
-            background: linear-gradient(145deg, #fff9e6, #fff5e0);
-            border-radius: 22px;
-            padding: 10px 12px;
+            background: linear-gradient(145deg, #1e3c2c, #0f2b1f);
+            border-radius: 25px;
+            padding: 12px 14px;
             border: 2px solid #f39c12;
+            color: white;
         }
         .player-card.active {
-            background: linear-gradient(135deg, #fff9e6, #ffe6b3);
-            border-color: #e67e22;
+            background: linear-gradient(135deg, #2a4a35, #1a3a25);
+            box-shadow: 0 0 20px rgba(243,156,18,0.4);
         }
 
         .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
 
         .player-badge {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
         }
 
         .player-avatar {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, #f093fb, #f5576c);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.1rem;
+            font-size: 1.3rem;
         }
         .opponent-card .player-avatar {
-            width: 26px;
-            height: 26px;
-            font-size: 0.9rem;
+            width: 32px;
+            height: 32px;
+            font-size: 1.1rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
         }
 
         .player-info {
@@ -169,182 +168,214 @@
             flex-direction: column;
         }
         .player-label {
-            font-size: 0.55rem;
-            color: #888;
+            font-size: 0.6rem;
+            opacity: 0.8;
         }
         .player-name {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-weight: 800;
         }
-        .opponent-card .player-name {
-            font-size: 0.75rem;
-        }
 
-        .you-badge {
-            background: #27ae60;
-            color: white;
-            padding: 2px 8px;
+        .you-badge, .opponent-badge {
+            padding: 3px 10px;
             border-radius: 20px;
-            font-size: 0.6rem;
+            font-size: 0.65rem;
             font-weight: bold;
         }
-        .opponent-badge {
-            background: #e74c3c;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 20px;
-            font-size: 0.6rem;
-            font-weight: bold;
-        }
+        .you-badge { background: #27ae60; color: white; }
+        .opponent-badge { background: #e74c3c; color: white; }
 
-        /* خانات الألوان */
         .slots-container {
             display: grid;
             grid-template-columns: repeat(6, 1fr);
-            gap: 5px;
-            margin: 8px 0;
+            gap: 6px;
+            margin: 10px 0;
         }
         .color-slot {
             aspect-ratio: 1;
-            border-radius: 10px;
-            background: #ddd;
+            border-radius: 12px;
+            background: #34495e;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            font-size: 0.6rem;
+            font-size: 0.65rem;
             transition: all 0.2s;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.1);
         }
         .color-slot.filled {
             border: 2px solid gold;
             color: white;
             text-shadow: 1px 1px 1px black;
-            font-size: 0.55rem;
-        }
-        .opponent-card .color-slot {
-            border-radius: 8px;
-            font-size: 0.55rem;
+            font-size: 0.6rem;
         }
 
-        /* مؤقت */
         .timer-section {
-            margin-top: 5px;
+            margin-top: 6px;
         }
         .timer-bar-container {
-            background: #ddd;
+            background: rgba(255,255,255,0.2);
             border-radius: 10px;
-            height: 3px;
+            height: 4px;
             overflow: hidden;
         }
         .timer-bar {
             height: 100%;
-            background: linear-gradient(90deg, #11998e, #38ef7d);
+            background: linear-gradient(90deg, #38ef7d, #11998e);
             transition: width 0.1s linear;
             width: 100%;
         }
         .timer-bar.warning { background: linear-gradient(90deg, #f5576c, #f093fb); }
         .timer-text {
-            font-size: 0.55rem;
-            color: #888;
+            font-size: 0.6rem;
+            opacity: 0.7;
             margin-top: 3px;
             text-align: center;
         }
 
-        /* النرد */
         .dice-area {
-            background: linear-gradient(135deg, #2c3e50, #1a1a2e);
-            border-radius: 25px;
-            padding: 10px;
-            margin: 10px 0;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border-radius: 30px;
+            padding: 15px;
+            margin: 12px 0;
             text-align: center;
         }
         .dice-container {
             display: flex;
             justify-content: center;
-            gap: 12px;
-            margin-bottom: 10px;
+            gap: 20px;
+            margin-bottom: 12px;
         }
-        .dice-card {
-            background: white;
-            width: 55px;
-            height: 55px;
-            border-radius: 14px;
+        .dice-3d {
+            width: 70px;
+            height: 70px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease;
+            cursor: pointer;
+        }
+        .dice-3d.rolling {
+            animation: rollDice 0.6s ease-out;
+        }
+        @keyframes rollDice {
+            0% { transform: rotateX(0deg) rotateY(0deg); }
+            25% { transform: rotateX(180deg) rotateY(90deg); }
+            50% { transform: rotateX(360deg) rotateY(180deg); }
+            75% { transform: rotateX(540deg) rotateY(270deg); }
+            100% { transform: rotateX(720deg) rotateY(360deg); }
+        }
+        .dice-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
-        }
-        .dice-card span {
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             font-weight: bold;
             color: white;
-            text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
+            text-shadow: 1px 1px 2px black;
+            backface-visibility: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
+        .face-front { transform: translateZ(35px); }
+        .face-back { transform: rotateY(180deg) translateZ(35px); }
+        .face-right { transform: rotateY(90deg) translateZ(35px); }
+        .face-left { transform: rotateY(-90deg) translateZ(35px); }
+        .face-top { transform: rotateX(90deg) translateZ(35px); }
+        .face-bottom { transform: rotateX(-90deg) translateZ(35px); }
+        
         .roll-btn {
             background: linear-gradient(135deg, #f39c12, #e67e22);
             border: none;
-            padding: 8px 18px;
-            font-size: 0.8rem;
+            padding: 10px 22px;
+            font-size: 0.9rem;
             font-weight: bold;
             border-radius: 50px;
             color: white;
             cursor: pointer;
             width: 100%;
-            max-width: 160px;
+            max-width: 180px;
+            box-shadow: 0 4px 12px rgba(243,156,18,0.4);
         }
         .roll-btn:active { transform: scale(0.96); }
         .roll-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
         .status-box {
-            background: #f0f2f5;
-            padding: 8px;
-            border-radius: 20px;
-            margin: 8px 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(10px);
+            padding: 10px;
+            border-radius: 25px;
+            margin: 10px 0;
             text-align: center;
             font-weight: bold;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
         .countdown-big {
             text-align: center;
-            font-size: 1.3rem;
+            font-size: 1.6rem;
             font-weight: 800;
-            margin: 3px 0;
+            margin: 5px 0;
             font-family: monospace;
+            color: #f39c12;
         }
 
-        /* الخانات المخفية */
         .hidden-grid-section {
-            margin-top: 12px;
+            margin-top: 15px;
         }
         .section-title {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             font-weight: bold;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             text-align: center;
             color: #333;
         }
         .hidden-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 7px;
+            gap: 8px;
         }
         .hidden-cell {
             aspect-ratio: 1;
             background: linear-gradient(145deg, #34495e, #2c3e50);
-            border-radius: 12px;
+            border-radius: 14px;
             cursor: pointer;
-            transition: all 0.1s;
+            transition: all 0.15s;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.9rem;
+            font-size: 1rem;
             font-weight: bold;
             color: rgba(255,255,255,0.5);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
         .hidden-cell:active { transform: scale(0.95); }
+        .hidden-cell.revealed {
+            animation: pop 0.3s ease;
+        }
+        @keyframes pop {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
 
-        /* شاشات النتائج */
+        .floating-emoji {
+            position: fixed;
+            font-size: 2.5rem;
+            pointer-events: none;
+            z-index: 2000;
+            animation: floatUp 1s ease-out forwards;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(0.5); opacity: 1; }
+            100% { transform: translateY(-100px) scale(1.5); opacity: 0; }
+        }
+
         .result-overlay {
             position: fixed;
             inset: 0;
@@ -357,22 +388,22 @@
             animation: fadeIn 0.3s;
         }
         .result-card {
-            background: white;
-            border-radius: 40px;
-            padding: 25px 20px;
+            background: linear-gradient(145deg, #fff, #f8f9fa);
+            border-radius: 50px;
+            padding: 30px 25px;
             text-align: center;
-            max-width: 280px;
+            max-width: 300px;
             width: 100%;
             animation: slideUp 0.3s;
         }
-        .result-emoji { font-size: 3rem; margin-bottom: 8px; }
-        .result-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 6px; }
-        .result-message { color: #666; margin-bottom: 15px; font-size: 0.8rem; }
+        .result-emoji { font-size: 3.5rem; margin-bottom: 10px; }
+        .result-title { font-size: 1.5rem; font-weight: 800; margin-bottom: 8px; }
+        .result-message { color: #666; margin-bottom: 20px; font-size: 0.85rem; }
         .new-game-btn {
             background: linear-gradient(135deg, #27ae60, #2ecc71);
             border: none;
-            padding: 8px 20px;
-            font-size: 0.85rem;
+            padding: 10px 25px;
+            font-size: 0.9rem;
             font-weight: bold;
             border-radius: 50px;
             color: white;
@@ -390,10 +421,10 @@
     <div class="game-card">
         <div id="lobbyScreen">
             <div class="lobby-screen">
-                <div class="game-title">🎨 دائرة الألوان</div>
-                <div class="game-subtitle">⏱️ 9 ثواني لكل دور</div>
+                <div class="game-title">🎲 دائرة الألوان</div>
+                <div class="game-subtitle">⏱️ 15 ثانية | نرد ثلاثي الأبعاد + مؤثرات صوتية</div>
                 <button class="btn-primary" id="createRoomBtn">🚀 إنشاء غرفة</button>
-                <div style="margin: 10px 0; color: #ccc;">━━━ أو ━━━</div>
+                <div style="margin: 12px 0; color: #ccc;">━━━ أو ━━━</div>
                 <input type="text" id="roomInput" class="room-input" placeholder="كود" maxlength="4">
                 <button class="btn-primary btn-success" id="joinRoomBtn">🎯 انضمام</button>
             </div>
@@ -444,17 +475,33 @@
 
             <div class="dice-area">
                 <div class="dice-container">
-                    <div class="dice-card" id="dice1"><span>?</span></div>
-                    <div class="dice-card" id="dice2"><span>?</span></div>
+                    <div class="dice-3d" id="dice1">
+                        <div class="dice-face face-front"></div>
+                        <div class="dice-face face-back"></div>
+                        <div class="dice-face face-right"></div>
+                        <div class="dice-face face-left"></div>
+                        <div class="dice-face face-top"></div>
+                        <div class="dice-face face-bottom"></div>
+                    </div>
+                    <div class="dice-3d" id="dice2">
+                        <div class="dice-face face-front"></div>
+                        <div class="dice-face face-back"></div>
+                        <div class="dice-face face-right"></div>
+                        <div class="dice-face face-left"></div>
+                        <div class="dice-face face-top"></div>
+                        <div class="dice-face face-bottom"></div>
+                    </div>
                 </div>
-                <button class="roll-btn" id="rollBtn">🎲 رمي النرد 🎲</button>
+                <button class="roll-btn" id="rollBtn">🎲 رمي النرد السحري 🎲</button>
             </div>
 
-            <div class="status-box" id="statusMsg">✨ جاري التحميل...</div>
+            <div class="status-box" id="statusMsg">
+                <span>✨</span> جاري التحميل... <span>✨</span>
+            </div>
             <div class="countdown-big" id="countdownDisplay"></div>
 
             <div class="hidden-grid-section">
-                <div class="section-title">📦 اختر خانة</div>
+                <div class="section-title">📦 اختر خانة (لديك فرصتان)</div>
                 <div class="hidden-grid" id="hiddenGrid"></div>
             </div>
         </div>
@@ -495,15 +542,117 @@
 
     let roomID, role, myTurn = false, hasRolledThisTurn = false;
     let timerInterval = null;
-    let currentTimeLeft = 9;
+    let currentTimeLeft = 15;
+    let clicksInTurn = 0;
+
+    // صوت النرد الجديد - واقعي وقوي
+    function playDiceSound() {
+        try {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const now = audioCtx.currentTime;
+            
+            // صوت ارتطام النرد الأول
+            const osc1 = audioCtx.createOscillator();
+            const gain1 = audioCtx.createGain();
+            osc1.connect(gain1);
+            gain1.connect(audioCtx.destination);
+            osc1.frequency.value = 150;
+            gain1.gain.value = 0.4;
+            osc1.type = 'triangle';
+            osc1.start();
+            gain1.gain.exponentialRampToValueAtTime(0.0001, now + 0.3);
+            osc1.stop(now + 0.3);
+            
+            // صوت ارتطام النرد الثاني
+            const osc2 = audioCtx.createOscillator();
+            const gain2 = audioCtx.createGain();
+            osc2.connect(gain2);
+            gain2.connect(audioCtx.destination);
+            osc2.frequency.value = 200;
+            gain2.gain.value = 0.35;
+            osc2.type = 'sine';
+            osc2.start(now + 0.05);
+            gain2.gain.exponentialRampToValueAtTime(0.0001, now + 0.35);
+            osc2.stop(now + 0.35);
+            
+            // صوت ارتطام إضافي (تأثير النرد على الطاولة)
+            const osc3 = audioCtx.createOscillator();
+            const gain3 = audioCtx.createGain();
+            osc3.connect(gain3);
+            gain3.connect(audioCtx.destination);
+            osc3.frequency.value = 100;
+            gain3.gain.value = 0.25;
+            osc3.type = 'sawtooth';
+            osc3.start(now + 0.1);
+            gain3.gain.exponentialRampToValueAtTime(0.0001, now + 0.4);
+            osc3.stop(now + 0.4);
+            
+            // صوت ارتطام نهائي (قوي)
+            const osc4 = audioCtx.createOscillator();
+            const gain4 = audioCtx.createGain();
+            osc4.connect(gain4);
+            gain4.connect(audioCtx.destination);
+            osc4.frequency.value = 250;
+            gain4.gain.value = 0.3;
+            osc4.type = 'square';
+            osc4.start(now + 0.15);
+            gain4.gain.exponentialRampToValueAtTime(0.0001, now + 0.45);
+            osc4.stop(now + 0.45);
+            
+        } catch(e) { console.log("Sound not supported"); }
+    }
+    
+    // صوت النجاح (رنة لطيفة)
+    function playSuccessSound() {
+        try {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const now = audioCtx.currentTime;
+            
+            // نغمة النجاح الأولى
+            const osc1 = audioCtx.createOscillator();
+            const gain1 = audioCtx.createGain();
+            osc1.connect(gain1);
+            gain1.connect(audioCtx.destination);
+            osc1.frequency.value = 880;
+            gain1.gain.value = 0.25;
+            osc1.type = 'sine';
+            osc1.start();
+            gain1.gain.exponentialRampToValueAtTime(0.0001, now + 0.2);
+            osc1.stop(now + 0.2);
+            
+            // نغمة النجاح الثانية
+            const osc2 = audioCtx.createOscillator();
+            const gain2 = audioCtx.createGain();
+            osc2.connect(gain2);
+            gain2.connect(audioCtx.destination);
+            osc2.frequency.value = 1100;
+            gain2.gain.value = 0.25;
+            osc2.type = 'sine';
+            osc2.start(now + 0.15);
+            gain2.gain.exponentialRampToValueAtTime(0.0001, now + 0.35);
+            osc2.stop(now + 0.35);
+            
+        } catch(e) { console.log("Sound not supported"); }
+    }
+    
+    // إظهار إيموجي لايك متحرك
+    function showLikeEmoji(x, y) {
+        const emoji = document.createElement('div');
+        emoji.className = 'floating-emoji';
+        emoji.innerHTML = '👍✨🎉';
+        emoji.style.left = (x || window.innerWidth/2 - 30) + 'px';
+        emoji.style.top = (y || window.innerHeight/2) + 'px';
+        document.body.appendChild(emoji);
+        setTimeout(() => emoji.remove(), 1000);
+    }
 
     const colorMap = {
-        '#FF69B4': { name: 'وردي', ar: 'وردي' },
-        '#e74c3c': { name: 'أحمر', ar: 'أحمر' },
-        '#f1c40f': { name: 'أصفر', ar: 'أصفر' },
-        '#3498db': { name: 'أزرق', ar: 'أزرق' },
-        '#8B4513': { name: 'بني', ar: 'بني' },
-        '#2ecc71': { name: 'أخضر', ar: 'أخضر' }
+        '#FF69B4': { name: 'وردي', ar: 'وردي', bg: '#FF69B4' },
+        '#e74c3c': { name: 'أحمر', ar: 'أحمر', bg: '#e74c3c' },
+        '#f1c40f': { name: 'أصفر', ar: 'أصفر', bg: '#f1c40f' },
+        '#3498db': { name: 'أزرق', ar: 'أزرق', bg: '#3498db' },
+        '#8B4513': { name: 'بني', ar: 'بني', bg: '#8B4513' },
+        '#2ecc71': { name: 'أخضر', ar: 'أخضر', bg: '#2ecc71' }
     };
     const hexArray = Object.keys(colorMap);
 
@@ -517,6 +666,26 @@
     }
     createSlots();
 
+    function updateDice3D(diceId, colorHex) {
+        const dice = document.getElementById(diceId);
+        const colorName = colorHex !== '?' ? colorMap[colorHex].ar : '?';
+        const bgColor = colorHex !== '?' ? colorHex : '#555';
+        
+        const faces = dice.querySelectorAll('.dice-face');
+        faces.forEach(face => {
+            face.style.background = bgColor;
+            face.innerHTML = colorName;
+            face.style.fontSize = '1rem';
+            face.style.fontWeight = 'bold';
+        });
+    }
+
+    function animateDice(diceId) {
+        const dice = document.getElementById(diceId);
+        dice.classList.add('rolling');
+        setTimeout(() => dice.classList.remove('rolling'), 600);
+    }
+
     function stopTimer() {
         if(timerInterval) { clearInterval(timerInterval); timerInterval = null; }
     }
@@ -524,7 +693,8 @@
     function startTurnTimer() {
         stopTimer();
         if(!myTurn) return;
-        currentTimeLeft = 9;
+        clicksInTurn = 0;
+        currentTimeLeft = 15;
         updateTimerUI();
         timerInterval = setInterval(async () => {
             if(!myTurn) { stopTimer(); return; }
@@ -545,7 +715,7 @@
         }
         const bar = document.getElementById('playerTimerBar');
         if(bar) {
-            const percent = (currentTimeLeft / 9) * 100;
+            const percent = (currentTimeLeft / 15) * 100;
             bar.style.width = `${percent}%`;
             if(currentTimeLeft <= 3) bar.classList.add('warning');
             else bar.classList.remove('warning');
@@ -562,7 +732,10 @@
             turn: nextTurn, dice: ['?', '?'], rev: { a: -1, b: -1 }, hasRolled: { p1: false, p2: false }
         });
         hasRolledThisTurn = false;
+        clicksInTurn = 0;
         stopTimer();
+        updateDice3D('dice1', '?');
+        updateDice3D('dice2', '?');
     }
 
     document.getElementById('createRoomBtn').onclick = async () => {
@@ -609,6 +782,12 @@
 
     async function selectCell(i) {
         if(!myTurn) { showMessage("⏳ ليس دورك!", "#f8d7da", "#721c24"); return; }
+        
+        if(clicksInTurn >= 2) {
+            showMessage("⚠️ لقد اخترت خانتين بالفعل! دورك انتهى", "#fff3cd", "#856404");
+            return;
+        }
+        
         const snapshot = await db.ref('rooms/' + roomID).once('value');
         const data = snapshot.val();
         if(!data || data.grid[i].m) return;
@@ -616,6 +795,7 @@
             showMessage("🎲 ارمي النرد أولاً!", "#fff3cd", "#856404");
             return;
         }
+        
         const clickedColor = data.grid[i].c;
         const diceColors = data.dice;
         const isMatch = diceColors.includes(clickedColor);
@@ -627,47 +807,99 @@
         cell.style.background = clickedColor;
         cell.innerHTML = colorMap[clickedColor].ar;
         cell.style.color = 'white';
-        cell.style.fontSize = '0.7rem';
+        cell.classList.add('revealed');
         
         let updates = {};
-        if(isMatch && !alreadyHas) {
-            currentInv[colorIndex] = 1;
-            updates[role === 'p1' ? 'p1Inv' : 'p2Inv'] = currentInv;
-            updates[`grid/${i}/m`] = true;
-            showMessage(`✅ حصلت على ${colorMap[clickedColor].ar}!`, "#d4edda", "#155724");
-            if(!currentInv.includes(0)) { updates['win'] = role; await db.ref('rooms/' + roomID).update(updates); stopTimer(); return; }
-        } else if(isMatch && alreadyHas) {
-            showMessage(`⚠️ ${colorMap[clickedColor].ar} موجود! ينتقل للخصم`, "#fff3cd", "#856404");
-            updates[`grid/${i}/m`] = true;
-            const opponentInv = role === 'p1' ? [...data.p2Inv] : [...data.p1Inv];
-            if(opponentInv[colorIndex] !== 1) {
-                opponentInv[colorIndex] = 1;
-                updates[role === 'p1' ? 'p2Inv' : 'p1Inv'] = opponentInv;
+        
+        if(isMatch) {
+            if(!alreadyHas) {
+                // اللاعب لا يملك هذا اللون - يأخذه
+                currentInv[colorIndex] = 1;
+                updates[role === 'p1' ? 'p1Inv' : 'p2Inv'] = currentInv;
+                updates[`grid/${i}/m`] = true;
+                showMessage(`✅ رائع! حصلت على ${colorMap[clickedColor].ar}! 👍`, "#d4edda", "#155724");
+                playSuccessSound();
+                showLikeEmoji();
+                
+                if(!currentInv.includes(0)) { 
+                    updates['win'] = role; 
+                    await db.ref('rooms/' + roomID).update(updates); 
+                    stopTimer(); 
+                    return; 
+                }
+            } else {
+                // اللاعب يملك هذا اللون بالفعل - يعود للخانة المخفية (يقلب من أول)
+                showMessage(`🔄 لديك ${colorMap[clickedColor].ar} بالفعل! عادت الخانة مخفية`, "#fff3cd", "#856404");
+                // لا نضيف اللون ولا نزيل الخانة - تعود مخفية
+                // نترك updates فارغة بالنسبة للخانة
+                updates[`grid/${i}/m`] = false; // تبقى موجودة
             }
         } else {
-            showMessage(`❌ ${colorMap[clickedColor].ar} لا يطابق النرد!`, "#f8d7da", "#721c24");
+            showMessage(`❌ للأسف! ${colorMap[clickedColor].ar} لا يطابق النرد!`, "#f8d7da", "#721c24");
         }
+        
         const revKey = data.rev.a === -1 ? 'rev/a' : 'rev/b';
         updates[revKey] = i;
         await db.ref('rooms/' + roomID).update(updates);
-        setTimeout(async () => {
-            const nextTurn = role === 'p1' ? 'p2' : 'p1';
-            await db.ref('rooms/' + roomID).update({ turn: nextTurn, dice: ['?', '?'], rev: { a: -1, b: -1 }, hasRolled: { p1: false, p2: false } });
-            hasRolledThisTurn = false;
-            stopTimer();
-        }, 1500);
+        
+        // إعادة الخانة إلى حالتها المخفية بعد ثانية إذا لم تطابق أو كان اللاعب يملك اللون
+        if(!isMatch || (isMatch && alreadyHas)) {
+            setTimeout(async () => {
+                await db.ref('rooms/' + roomID).update({ [`rev/${revKey.split('/')[1]}`]: -1 });
+                const cellEl = document.getElementById('cell-' + i);
+                if(cellEl && !data.grid[i].m) {
+                    cellEl.style.background = 'linear-gradient(145deg, #34495e, #2c3e50)';
+                    cellEl.innerHTML = '?';
+                    cellEl.style.color = 'rgba(255,255,255,0.5)';
+                }
+            }, 800);
+        }
+        
+        clicksInTurn++;
+        
+        if(clicksInTurn >= 2) {
+            setTimeout(async () => {
+                const nextTurn = role === 'p1' ? 'p2' : 'p1';
+                await db.ref('rooms/' + roomID).update({ 
+                    turn: nextTurn, 
+                    dice: ['?', '?'], 
+                    rev: { a: -1, b: -1 }, 
+                    hasRolled: { p1: false, p2: false } 
+                });
+                hasRolledThisTurn = false;
+                clicksInTurn = 0;
+                stopTimer();
+                updateDice3D('dice1', '?');
+                updateDice3D('dice2', '?');
+            }, 1500);
+        }
     }
 
     async function rollDice() {
         if(!myTurn) { showMessage("⏳ ليس دورك!", "#f8d7da", "#721c24"); return; }
         const snapshot = await db.ref('rooms/' + roomID).once('value');
         const data = snapshot.val();
-        if(data.hasRolled && data.hasRolled[role]) { showMessage("🎲 رميت النرد مسبقاً!", "#fff3cd", "#856404"); return; }
-        const dice1 = hexArray[Math.floor(Math.random() * hexArray.length)];
-        const dice2 = hexArray[Math.floor(Math.random() * hexArray.length)];
-        showMessage(`🎲 النرد: ${colorMap[dice1].ar} و ${colorMap[dice2].ar}`, "#d4edda", "#155724");
-        await db.ref('rooms/' + roomID).update({ dice: [dice1, dice2], [`hasRolled/${role}`]: true });
-        hasRolledThisTurn = true;
+        if(data.hasRolled && data.hasRolled[role]) { 
+            showMessage("🎲 رميت النرد مسبقاً!", "#fff3cd", "#856404"); 
+            return; 
+        }
+        
+        playDiceSound();
+        animateDice('dice1');
+        animateDice('dice2');
+        
+        setTimeout(async () => {
+            const dice1 = hexArray[Math.floor(Math.random() * hexArray.length)];
+            const dice2 = hexArray[Math.floor(Math.random() * hexArray.length)];
+            showMessage(`🎲 النرد السحري: ${colorMap[dice1].ar} و ${colorMap[dice2].ar}`, "#d4edda", "#155724");
+            await db.ref('rooms/' + roomID).update({ 
+                dice: [dice1, dice2], 
+                [`hasRolled/${role}`]: true 
+            });
+            updateDice3D('dice1', dice1);
+            updateDice3D('dice2', dice2);
+            hasRolledThisTurn = true;
+        }, 300);
     }
 
     function listenToGame() {
@@ -687,8 +919,15 @@
             }
             const oldTurn = myTurn;
             myTurn = data.turn === role;
-            if(myTurn && !oldTurn) { hasRolledThisTurn = false; startTurnTimer(); }
-            else if(!myTurn) { stopTimer(); document.getElementById('countdownDisplay').innerHTML = ''; }
+            if(myTurn && !oldTurn) { 
+                hasRolledThisTurn = false; 
+                clicksInTurn = 0;
+                startTurnTimer(); 
+            }
+            else if(!myTurn) { 
+                stopTimer(); 
+                document.getElementById('countdownDisplay').innerHTML = ''; 
+            }
             
             document.getElementById('rollBtn').disabled = !myTurn || (data.hasRolled && data.hasRolled[role]);
             document.getElementById('playerCard').classList.toggle('active', data.turn === role);
@@ -708,7 +947,6 @@
                         el.style.background = item.c;
                         el.innerHTML = colorMap[item.c].ar;
                         el.style.color = 'white';
-                        el.style.fontSize = '0.7rem';
                     } else {
                         el.style.background = 'linear-gradient(145deg, #34495e, #2c3e50)';
                         el.innerHTML = '?';
@@ -717,15 +955,7 @@
                 }
             }
             
-            const updateDice = (id, col) => {
-                const d = document.getElementById(id);
-                if(col === '?' || !col) { d.style.background = 'white'; d.innerHTML = '<span style="color:#999;">?</span>'; }
-                else { d.style.background = col; d.innerHTML = `<span>${colorMap[col].ar}</span>`; }
-            };
-            updateDice('dice1', data.dice[0]);
-            updateDice('dice2', data.dice[1]);
-            
-            const updateSlots = (id, inv, isPlayer) => {
+            const updateSlots = (id, inv) => {
                 const slots = document.getElementById(id).children;
                 for(let i=0; i<inv.length; i++) {
                     if(inv[i] === 1) {
@@ -735,36 +965,41 @@
                         slots[i].innerHTML = colorMap[hexArray[i]].ar;
                         slots[i].classList.add('filled');
                     } else {
-                        slots[i].style.background = '#ddd';
-                        slots[i].style.color = '#999';
+                        slots[i].style.background = '#34495e';
+                        slots[i].style.color = 'rgba(255,255,255,0.5)';
                         slots[i].style.border = 'none';
                         slots[i].innerHTML = (i+1).toString();
                         slots[i].classList.remove('filled');
                     }
                 }
             };
-            updateSlots('playerSlots', role === 'p1' ? data.p1Inv : data.p2Inv, true);
-            updateSlots('opponentSlots', role === 'p1' ? data.p2Inv : data.p1Inv, false);
+            updateSlots('playerSlots', role === 'p1' ? data.p1Inv : data.p2Inv);
+            updateSlots('opponentSlots', role === 'p1' ? data.p2Inv : data.p1Inv);
             
-            const statusText = myTurn ? (data.hasRolled && data.hasRolled[role] ? "🎯 اختر خانة!" : "🎲 اضغط على النرد أولاً!") : `⏳ دور الخصم...`;
-            document.getElementById('statusMsg').innerHTML = statusText;
+            const remainingClicks = 2 - clicksInTurn;
+            const statusText = myTurn ? 
+                (data.hasRolled && data.hasRolled[role] ? `🎯 اختر خانة! (${remainingClicks} فرصة)` : "🎲 اضغط على النرد أولاً!") : 
+                `⏳ دور الخصم...`;
+            document.getElementById('statusMsg').innerHTML = `<span>${myTurn ? '🎯' : '⏳'}</span> ${statusText} <span>${myTurn ? '🎲' : '⌛'}</span>`;
         });
     }
 
     function showMessage(msg, bg, color) {
         const statusDiv = document.getElementById('statusMsg');
-        statusDiv.innerHTML = msg;
+        statusDiv.innerHTML = `<span>${msg.includes('✅') ? '👍' : msg.includes('🔄') ? '🔄' : msg.includes('❌') ? '❌' : '✨'}</span> ${msg} <span>🎲</span>`;
         statusDiv.style.background = bg;
         statusDiv.style.color = color;
         setTimeout(() => {
-            if(document.getElementById('statusMsg').innerHTML === msg) {
-                statusDiv.style.background = '#f0f2f5';
-                statusDiv.style.color = '#333';
+            if(document.getElementById('statusMsg').innerHTML.includes(msg)) {
+                statusDiv.style.background = 'rgba(0,0,0,0.7)';
+                statusDiv.style.color = 'white';
             }
         }, 2000);
     }
 
     document.getElementById('rollBtn').onclick = rollDice;
+    updateDice3D('dice1', '?');
+    updateDice3D('dice2', '?');
 </script>
 </body>
 </html>
